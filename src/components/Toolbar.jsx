@@ -49,7 +49,7 @@ export default function Toolbar({ onSearch, selected }) {
           placeholder="搜尋商品名稱、條碼、家族碼或尺寸表內容…"
           onChange={(e) => onSearch(e.target.value)}
         />
-        <input type="text" value={selected?.plain || ""} readOnly />
+        <input type="text" value={selected?.full || ""} readOnly />
         <button onClick={handleCopy}>複製</button>
       </div>
 
