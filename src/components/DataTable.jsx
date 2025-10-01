@@ -1,42 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 
-// 工具函式：去除 HTML tag
+// 仍保留工具函式，給其他欄位用
 const stripHtml = (str) => str.replace(/<[^>]*>/g, "");
 
 export default function DataTable({ headers, rows, selected, setSelected }) {
-  const [flashCells, setFlashCells] = useState({});
+  if (!rows.length) { /* ...略... */ }
 
-  if (!rows.length) {
-    return (
-      <table>
-        <tbody>
-          <tr>
-            <td colSpan={headers.length}>沒有資料</td>
-          </tr>
-        </tbody>
-      </table>
-    );
-  }
-
-  const handleClick = (rowIndex, colName, fullValue, plainValue) => {
-    setSelected({ full: fullValue, plain: plainValue });
-
-    const key = `${rowIndex}-${colName}`;
-    setFlashCells((prev) => ({ ...prev, [key]: true }));
-
-    setTimeout(() => {
-      setFlashCells((prev) => ({ ...prev, [key]: false }));
-    }, 500); // 0.5 秒後移除閃爍
-  };
+  const isSizeCol = (h) => h.includes("尺寸表");
 
   return (
     <table>
       <thead>
         <tr>
           {headers.map((h, i) => (
-            <th key={i} className={h.includes("尺寸表") ? "size-col" : ""}>
-              {h}
-            </th>
+            <th key={i} className={isSizeCol(h) ? "size-col" : ""}>{h}</th>
           ))}
         </tr>
       </thead>
@@ -46,22 +23,22 @@ export default function DataTable({ headers, rows, selected, setSelected }) {
           <tr key={i}>
             {headers.map((h, j) => {
               const fullValue = row[h] || "";
-              const plainValue = stripHtml(fullValue);
-              const key = `${i}-${h}`;
+              // ⚠️ 尺寸表欄顯示「原始字串」，其他欄位仍顯示純文字
+              const displayText = isSizeCol(h) ? fullValue : stripHtml(fullValue);
+              const plainValue   = stripHtml(fullValue);
 
               return (
                 <td
                   key={j}
-                  onClick={() => handleClick(i, h, fullValue, plainValue)}
-                  className={`${flashCells[key] ? "flash-once" : ""} ${
-                    selected?.full === fullValue ? "selected-col" : ""
-                  }`}
-                  title={plainValue}
+                  onClick={() => setSelected({ full: fullValue, plain: plainValue })}
+                  className={selected?.full === fullValue ? "selected-col" : ""}
+                  title={displayText}
                 >
-                  {h.includes("尺寸表") ? (
-                    <div className="clamp-2">{plainValue}</div>
+                  {isSizeCol(h) ? (
+                    // 兩行顯示 + 顯示原始字串（React 會自動轉義，不會真的渲染成 HTML）
+                    <div className="clamp-2">{displayText}</div>
                   ) : (
-                    plainValue
+                    displayText
                   )}
                 </td>
               );
