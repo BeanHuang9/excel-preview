@@ -43,35 +43,29 @@ export default function Toolbar({ onSearch, selected }) {
 
   return (
     <>
-     <div className="toolbar">
-            <input
-                type="text"
-                placeholder="搜尋商品名稱、條碼、家族碼或尺寸表內容…"
-                onChange={(e) => onSearch(e.target.value)}
-            />
-            {/* 顯示完整 HTML 原始碼 */}
-            <textarea
-                value={selected?.full || ""}
-                readOnly
-                style={{
-                minWidth: "280px",
-                height: "80px",
-                padding: "10px 12px",
-                border: "1px solid #cfcfcf",
-                borderRadius: "8px",
-                fontSize: "13px",
-                whiteSpace: "pre-wrap",
-                }}
-            />
-            <button onClick={handleCopy}>複製</button>
-            </div>
+      <div className="toolbar">
+        <input
+          type="text"
+          placeholder="搜尋商品名稱、條碼、家族碼或尺寸表內容…"
+          onChange={(e) => onSearch(e.target.value)}
+        />
+        {/* 顯示完整 HTML 原始碼 */}
+        <textarea
+          value={selected?.full || ''}
+          readOnly
+          style={{
+            minWidth: '280px',
+            padding: '10px 12px',
+            border: '1px solid #cfcfcf',
+            borderRadius: '8px',
+            fontSize: '13px',
+            whiteSpace: 'pre-wrap',
+          }}
+        />
+        <button onClick={handleCopy}>複製</button>
+      </div>
 
-
-      {notice && (
-        <div className={`copy-notice ${fadeOut ? "fade-out" : ""}`}>
-          已複製到剪貼簿！
-        </div>
-      )}
+      {notice && <div className={`copy-notice ${fadeOut ? 'fade-out' : ''}`}>已複製到剪貼簿！</div>}
     </>
   );
 }
