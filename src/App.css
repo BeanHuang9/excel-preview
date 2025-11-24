@@ -47,6 +47,11 @@ h1 {
   border: 1px solid #cfcfcf;
   border-radius: 8px;
   outline: none;
+  min-height: 40px;
+}
+
+.toolbar textarea{
+   min-height: 40px;
 }
 
 .toolbar input[type='text']:focus {
