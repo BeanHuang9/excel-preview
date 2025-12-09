@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 export default function Toolbar({ onSearch, selected }) {
   const [notice, setNotice] = useState(false);
@@ -12,14 +12,14 @@ export default function Toolbar({ onSearch, selected }) {
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(text);
       } else {
-        const ta = document.createElement("textarea");
+        const ta = document.createElement('textarea');
         ta.value = text;
-        ta.setAttribute("readonly", "");
-        ta.style.position = "fixed";
-        ta.style.top = "-9999px";
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.top = '-9999px';
         document.body.appendChild(ta);
         ta.select();
-        document.execCommand("copy");
+        document.execCommand('copy');
         document.body.removeChild(ta);
       }
     } catch (err) {
@@ -30,15 +30,20 @@ export default function Toolbar({ onSearch, selected }) {
 
   const handleCopy = async () => {
     try {
-      await copyText(selected?.full || "");
+      await copyText(selected?.full || '');
       setNotice(true);
       setFadeOut(false);
       setTimeout(() => setFadeOut(true), 4500);
       setTimeout(() => setNotice(false), 5000);
     } catch (e) {
       console.error(e);
-      alert("複製失敗：瀏覽器限制了剪貼簿權限（試試使用 localhost 或 HTTPS）。");
+      alert('複製失敗：瀏覽器限制了剪貼簿權限（試試使用 localhost 或 HTTPS）。');
     }
+  };
+
+  // ➕ 新增：前往 CodePen
+  const handleGoCodePen = () => {
+    window.open('https://codepen.io/', '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -63,6 +68,7 @@ export default function Toolbar({ onSearch, selected }) {
           }}
         />
         <button onClick={handleCopy}>複製</button>
+        <button onClick={handleGoCodePen}>CodePen</button>
       </div>
 
       {notice && <div className={`copy-notice ${fadeOut ? 'fade-out' : ''}`}>已複製到剪貼簿！</div>}

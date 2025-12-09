@@ -74,20 +74,11 @@ export default function App() {
         </div>
       )}
 
-      <h1>Excel 表格預覽</h1>
+      <h1>商品尺寸表</h1>
 
-      <Toolbar
-        onSearch={handleSearch}
-        selected={selected}
-        setSelected={setSelected}
-      />
+      <Toolbar onSearch={handleSearch} selected={selected} setSelected={setSelected} />
 
-      <DataTable
-        headers={headers}
-        rows={pageRows}
-        selected={selected}
-        setSelected={setSelected}
-      />
+      <DataTable headers={headers} rows={pageRows} selected={selected} setSelected={setSelected} />
 
       <Pagination page={page} setPage={setPage} totalPages={totalPages} />
     </div>
