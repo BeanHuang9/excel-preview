@@ -19,6 +19,9 @@ h1 {
   margin-bottom: var(--gap);
 }
 
+/* ======================
+   Toolbar
+====================== */
 .toolbar {
   display: flex;
   gap: var(--gap);
@@ -40,35 +43,17 @@ h1 {
   outline: none;
 }
 
-
 .toolbar input[type='text'] {
-  padding: 10px 12px;
-  min-width: 280px;
-  border: 1px solid #cfcfcf;
-  border-radius: 8px;
-  outline: none;
   min-height: 40px;
 }
 
-.toolbar textarea{
+.toolbar textarea {
   height: 40px;
 }
 
 .toolbar input[type='text']:focus {
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-}
-
-/* .toolbar button {
-  padding: 10px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  background: #f3f4f6;
-  cursor: pointer;
-} */
-
-.toolbar button:hover {
-  background: #e5e7eb;
 }
 
 .toolbar button {
@@ -81,17 +66,22 @@ h1 {
   font-size: 14px;
 }
 
+.toolbar button:hover {
+  background: #e5e7eb;
+}
+
 .toolbar button + button {
   margin-left: 8px;
 }
-
 
 .hint {
   color: #666;
   font-size: 12px;
 }
 
-/* Table */
+/* ======================
+   Table
+====================== */
 table {
   border-collapse: collapse;
   width: 100%;
@@ -102,7 +92,6 @@ table {
   table-layout: fixed;
 }
 
-
 table td {
   cursor: pointer;
   transition: background 0.2s;
@@ -111,7 +100,6 @@ table td {
 table td:hover {
   background: #f5f5f5;
 }
-
 
 th,
 td {
@@ -138,10 +126,9 @@ tbody tr:nth-child(odd) {
   background: #fcfcfc;
 }
 
-
-/* 點擊時閃黃 */
+/* 點擊閃黃 */
 @keyframes flash-yellow {
-  0%   { background-color: #fff9c4; }  /* 淡黃色 */
+  0% { background-color: #fff9c4; }
   100% { background-color: transparent; }
 }
 
@@ -149,19 +136,15 @@ tbody tr:nth-child(odd) {
   animation: flash-yellow 0.5s ease;
 }
 
-/* 複製成功時閃綠 */
+/* 複製成功閃綠 */
 @keyframes flash-green {
-  0%   { background-color: #c8f7c5; }  /* 淡綠色 */
+  0% { background-color: #c8f7c5; }
   100% { background-color: transparent; }
 }
 
 .flash-copied {
   animation: flash-green 0.6s ease;
 }
-
-
-
-
 
 .clamp-2 {
   display: -webkit-box;
@@ -173,14 +156,14 @@ tbody tr:nth-child(odd) {
   cursor: pointer;
 }
 
-
-
-.selected-td {
+.selected-col {
   outline: 2px solid #7f0019;
   outline-offset: -2px;
 }
 
-/* Pagination */
+/* ======================
+   Pagination
+====================== */
 .pagination {
   display: flex;
   flex-wrap: wrap;
@@ -215,43 +198,9 @@ tbody tr:nth-child(odd) {
   color: #6b7280;
 }
 
-/* Loading */
-.loading {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.9);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-  font-size: 16px;
-  color: #333;
-}
-
-
-.copy-notice {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: #111827;
-  color: #fff;
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  z-index: 9999;
-  opacity: 1;
-  transition: opacity 0.5s;
-}
-
-.copy-notice.fade-out {
-  opacity: 0;
-}
-
-
-/* ✅ Loading 樣式 */
+/* ======================
+   Loading
+====================== */
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -282,22 +231,87 @@ tbody tr:nth-child(odd) {
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 複製通知 */
+.copy-notice {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #111827;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+
+.copy-notice.fade-out {
+  opacity: 0;
+}
+
+/* ======================
+   尺寸表預覽區塊
+====================== */
+.preview-card {
+  max-width: 100%;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.preview-header {
+  display: flex;
+  justify-content: flex-end; /* 強制靠右 */
+  margin-bottom: 10px;
 }
 
 
-
-.selected-col {
-  outline: 2px solid #7f0019;
-  outline-offset: -2px;
+.preview-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #374151;
 }
 
+.preview-copy-btn {
+  padding: 6px 12px;
+  background: #111827;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
 
-thead th.size-col {
-  background: yellow;
+.preview-copy-btn:hover {
+  background: #1f2937;
+}
+
+/* 預覽內容內的表格樣式 */
+.preview-content table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.preview-content th,
+.preview-content td {
+  border: 1px solid #e5e7eb;
+  padding: 6px 8px;
+  font-size: 13px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.preview-content thead {
+  background: #f3f4f6;
+}
+
+.preview-content tr:nth-child(even) td {
+  background: #fafafa;
 }
