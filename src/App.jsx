@@ -16,6 +16,17 @@ export default function App() {
   const [selected, setSelected] = useState('');
   const previewRef = useRef(null);
 
+  const [showTop, setShowTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowTop(window.scrollY > 300); // 超過 300px 才顯示
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   useEffect(() => {
     Papa.parse(
       'https://docs.google.com/spreadsheets/d/1nYuv-yPxdKgKargFzbnQeyE15eW7N1QMVGzrbTHrcVE/gviz/tq?tqx=out:csv',
@@ -132,6 +143,16 @@ export default function App() {
       <DataTable headers={headers} rows={pageRows} selected={selected} setSelected={setSelected} />
 
       <Pagination page={page} setPage={setPage} totalPages={totalPages} />
+
+      {/* 回頂端按鈕 */}
+      {showTop && (
+        <button
+          className="back-to-top"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
+          ▲
+        </button>
+      )}
     </div>
   );
 }
