@@ -78,7 +78,7 @@ export default function App() {
         </div>
       )}
 
-      <h1>商品尺寸表</h1>
+      <h1>尺寸表資料庫</h1>
 
       <Toolbar onSearch={handleSearch} selected={selected} setSelected={setSelected} />
 
