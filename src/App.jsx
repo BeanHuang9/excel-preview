@@ -4,6 +4,7 @@ import Toolbar from './components/Toolbar';
 import DataTable from './components/DataTable';
 import Pagination from './components/Pagination';
 import './App.css';
+import html2canvas from 'html2canvas';
 
 const PAGE_SIZE = 50;
 
@@ -97,9 +98,6 @@ export default function App() {
       {selected?.isSize && selected.full && (
         <div className="preview-card">
           <div className="preview-header">
-            {/* 🚫 不顯示尺寸表預覽文字（整段移除） */}
-
-            {/* ✔ 複製表格按鈕保留在右側 */}
             <button
               className="preview-copy-btn"
               onClick={() => {
@@ -108,7 +106,6 @@ export default function App() {
 
                 const range = document.createRange();
                 range.selectNodeContents(el);
-
                 const selection = window.getSelection();
                 selection.removeAllRanges();
                 selection.addRange(range);
@@ -116,19 +113,55 @@ export default function App() {
                 try {
                   const ok = document.execCommand('copy');
                   selection.removeAllRanges();
-
-                  if (ok) {
-                    alert('已複製尺寸表，貼上後會是表格。');
-                  } else {
-                    alert('複製沒有成功，請手動 Ctrl+C / ⌘C。');
-                  }
-                } catch (e) {
+                  alert(ok ? '已複製尺寸表，貼上後會是表格。' : '複製失敗');
+                } catch {
                   selection.removeAllRanges();
-                  alert('瀏覽器不支援自動複製，請手動選取表格後 Ctrl+C / ⌘C。');
+                  alert('請手動複製');
                 }
               }}
             >
               複製表格
+            </button>
+
+            {/* ➕ 新增：存成 JPG */}
+            <button
+              className="preview-copy-btn"
+              onClick={async () => {
+                const el = previewRef.current;
+                if (!el) return;
+
+                // 1️⃣ 建立一個暫時的 wrapper
+                const wrapper = document.createElement('div');
+                wrapper.style.padding = '10px';
+                wrapper.style.background = '#ffffff';
+                wrapper.style.display = 'inline-block';
+
+                // 2️⃣ 複製尺寸表 DOM
+                const clone = el.cloneNode(true);
+                wrapper.appendChild(clone);
+
+                // 3️⃣ 丟到畫面外（不影響使用者）
+                wrapper.style.position = 'fixed';
+                wrapper.style.top = '-9999px';
+                document.body.appendChild(wrapper);
+
+                // 4️⃣ 轉成 canvas
+                const canvas = await html2canvas(wrapper, {
+                  backgroundColor: '#ffffff',
+                  scale: 2,
+                });
+
+                // 5️⃣ 移除暫時 DOM
+                document.body.removeChild(wrapper);
+
+                // 6️⃣ 下載 JPG
+                const link = document.createElement('a');
+                link.download = '尺寸表.jpg';
+                link.href = canvas.toDataURL('image/jpeg', 0.95);
+                link.click();
+              }}
+            >
+              儲存成 JPG
             </button>
           </div>
 
