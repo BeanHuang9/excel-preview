@@ -1,7 +1,7 @@
 import React from 'react';
 
-// 仍保留工具函式，給其他欄位用
-const stripHtml = (str) => str.replace(/<[^>]*>/g, '');
+// 工具：移除 HTML 標籤
+const stripHtml = (str) => String(str || '').replace(/<[^>]*>/g, '');
 
 export default function DataTable({ headers, rows, selected, setSelected }) {
   if (!rows.length) {
@@ -24,38 +24,50 @@ export default function DataTable({ headers, rows, selected, setSelected }) {
       </thead>
 
       <tbody>
-        {rows.map((row, i) => (
-          <tr key={i}>
-            {headers.map((h, j) => {
-              const fullValue = row[h] || '';
-              const displayText = isSizeCol(h) ? fullValue : stripHtml(fullValue);
-              const plainValue = stripHtml(fullValue);
-              const isSelected = selected?.full === fullValue;
+        {rows.map((row, i) => {
+          // ✅ 找家族碼（防空白 / BOM）
+          const familyKey = Object.keys(row).find((k) => k.includes('家族碼'));
+          const rawFamilyCode = familyKey ? String(row[familyKey]).trim() : '';
 
-              return (
-                <td
-                  key={j}
-                  onClick={() =>
-                    setSelected({
-                      full: fullValue,
-                      plain: plainValue,
-                      isSize: isSizeCol(h), // ✅ 多存這個
-                    })
-                  }
-                  className={isSelected ? 'selected-col' : ''}
-                  title={displayText}
-                >
-                  {isSizeCol(h) ? (
-                    // 表格裡還是只顯示「原始文字縮兩行」，避免塞真正表格在裡面
-                    <div className="clamp-2">{displayText}</div>
-                  ) : (
-                    displayText
-                  )}
-                </td>
-              );
-            })}
-          </tr>
-        ))}
+          // ✅ 找條碼（當家族碼為空或 #N/A 時 fallback）
+          const barcodeKey = Object.keys(row).find((k) => k.includes('條碼'));
+          const barcode = barcodeKey ? String(row[barcodeKey]).trim() : '';
+
+          // ✅ 最終用來當檔名的代碼
+          const finalCode = rawFamilyCode && rawFamilyCode !== '#N/A' ? rawFamilyCode : barcode;
+
+          return (
+            <tr key={i}>
+              {headers.map((h, j) => {
+                const fullValue = row[h] || '';
+                const displayText = isSizeCol(h) ? fullValue : stripHtml(fullValue);
+                const plainValue = stripHtml(fullValue);
+                const isSelected = selected?.full === fullValue;
+
+                return (
+                  <td
+                    key={j}
+                    onClick={() => {
+                      // ❗只在點「尺寸表欄位」時才更新 selected
+                      if (!isSizeCol(h)) return;
+
+                      setSelected({
+                        full: fullValue,
+                        plain: plainValue,
+                        isSize: true,
+                        familyCode: finalCode, // ✅ 一定有值（家族碼 or 條碼）
+                      });
+                    }}
+                    className={isSelected ? 'selected-col' : ''}
+                    title={displayText}
+                  >
+                    {isSizeCol(h) ? <div className="clamp-2">{displayText}</div> : displayText}
+                  </td>
+                );
+              })}
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );

@@ -14,20 +14,24 @@ export default function App() {
   const [headers, setHeaders] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [page, setPage] = useState(1);
-  const [selected, setSelected] = useState('');
-  const previewRef = useRef(null);
 
+  // 🔹 Toolbar 用（只負責複製 HTML）
+  const [selected, setSelected] = useState(null);
+
+  // 🔹 尺寸表專用（預覽 + 存 JPG）
+  const [sizeSelected, setSizeSelected] = useState(null);
+
+  const previewRef = useRef(null);
   const [showTop, setShowTop] = useState(false);
 
+  /* 回頂端 */
   useEffect(() => {
-    const handleScroll = () => {
-      setShowTop(window.scrollY > 300); // 超過 300px 才顯示
-    };
-
+    const handleScroll = () => setShowTop(window.scrollY > 300);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  /* 讀取 CSV */
   useEffect(() => {
     Papa.parse(
       'https://docs.google.com/spreadsheets/d/1nYuv-yPxdKgKargFzbnQeyE15eW7N1QMVGzrbTHrcVE/gviz/tq?tqx=out:csv',
@@ -39,24 +43,18 @@ export default function App() {
           setLoading(false);
           const rev = data.reverse();
 
-          // ✅ 過濾掉空白欄位和奇怪的 key
           const validHeaders = Object.keys(rev[0] || {}).filter(
             (h) => h && h.trim() !== '' && !h.startsWith('_')
           );
 
-          setRows(rev);
-          setHeaders(validHeaders);
-
-          // ✅ 把每列的空白 key 也清理掉，避免資料列多出垃圾欄位
           const cleaned = rev.map((row) => {
             const newRow = {};
-            validHeaders.forEach((h) => {
-              newRow[h] = row[h];
-            });
+            validHeaders.forEach((h) => (newRow[h] = row[h]));
             return newRow;
           });
 
           setRows(cleaned);
+          setHeaders(validHeaders);
           setFiltered(cleaned);
         },
         error: () => setLoading(false),
@@ -92,10 +90,11 @@ export default function App() {
 
       <h1>尺寸表資料庫</h1>
 
-      <Toolbar onSearch={handleSearch} selected={selected} setSelected={setSelected} />
+      {/* 🔹 Toolbar：只處理搜尋＋複製 */}
+      <Toolbar onSearch={handleSearch} selected={selected} />
 
-      {/* ✅ 尺寸表預覽區塊 */}
-      {selected?.isSize && selected.full && (
+      {/* 🔹 尺寸表預覽 */}
+      {sizeSelected?.isSize && sizeSelected.full && (
         <div className="preview-card">
           <div className="preview-header">
             <button
@@ -110,53 +109,41 @@ export default function App() {
                 selection.removeAllRanges();
                 selection.addRange(range);
 
-                try {
-                  const ok = document.execCommand('copy');
-                  selection.removeAllRanges();
-                  alert(ok ? '已複製尺寸表，貼上後會是表格。' : '複製失敗');
-                } catch {
-                  selection.removeAllRanges();
-                  alert('請手動複製');
-                }
+                document.execCommand('copy');
+                selection.removeAllRanges();
+                alert('已複製尺寸表，貼上後會是表格。');
               }}
             >
               複製表格
             </button>
 
-            {/* ➕ 新增：存成 JPG */}
             <button
               className="preview-copy-btn"
               onClick={async () => {
+                const code = sizeSelected.familyCode;
+                if (!code) {
+                  alert('此筆尺寸表沒有可用的家族碼或條碼');
+                  return;
+                }
+
                 const el = previewRef.current;
                 if (!el) return;
 
-                // 1️⃣ 建立一個暫時的 wrapper
                 const wrapper = document.createElement('div');
                 wrapper.style.padding = '10px';
-                wrapper.style.background = '#ffffff';
+                wrapper.style.background = '#fff';
                 wrapper.style.display = 'inline-block';
 
-                // 2️⃣ 複製尺寸表 DOM
-                const clone = el.cloneNode(true);
-                wrapper.appendChild(clone);
-
-                // 3️⃣ 丟到畫面外（不影響使用者）
+                wrapper.appendChild(el.cloneNode(true));
                 wrapper.style.position = 'fixed';
                 wrapper.style.top = '-9999px';
                 document.body.appendChild(wrapper);
 
-                // 4️⃣ 轉成 canvas
-                const canvas = await html2canvas(wrapper, {
-                  backgroundColor: '#ffffff',
-                  scale: 2,
-                });
-
-                // 5️⃣ 移除暫時 DOM
+                const canvas = await html2canvas(wrapper, { scale: 2 });
                 document.body.removeChild(wrapper);
 
-                // 6️⃣ 下載 JPG
                 const link = document.createElement('a');
-                link.download = '尺寸表.jpg';
+                link.download = `${code}.jpg`;
                 link.href = canvas.toDataURL('image/jpeg', 0.95);
                 link.click();
               }}
@@ -168,16 +155,21 @@ export default function App() {
           <div
             ref={previewRef}
             className="preview-content"
-            dangerouslySetInnerHTML={{ __html: selected.full }}
+            dangerouslySetInnerHTML={{ __html: sizeSelected.full }}
           />
         </div>
       )}
 
-      <DataTable headers={headers} rows={pageRows} selected={selected} setSelected={setSelected} />
+      {/* 🔹 表格 */}
+      <DataTable
+        headers={headers}
+        rows={pageRows}
+        selected={sizeSelected}
+        setSelected={setSizeSelected}
+      />
 
       <Pagination page={page} setPage={setPage} totalPages={totalPages} />
 
-      {/* 回頂端按鈕 */}
       {showTop && (
         <button
           className="back-to-top"
