@@ -61,7 +61,7 @@ export default function Toolbar({ onSearch, selected }) {
           onChange={(e) => onSearch(e.target.value)}
         />
 
-        {/* <textarea
+        <textarea
           value={selected?.full || ''}
           readOnly
           style={{
@@ -75,7 +75,7 @@ export default function Toolbar({ onSearch, selected }) {
         />
 
         <button onClick={handleCopy}>複製</button>
-        <button onClick={handleGoCodePen}>CodePen</button> */}
+        <button onClick={handleGoCodePen}>CodePen</button>
       </div>
 
       {notice && <div className={`copy-notice ${fadeOut ? 'fade-out' : ''}`}>已複製到剪貼簿！</div>}
