@@ -33,37 +33,6 @@ export default function Toolbar({ onSearch, selected }) {
     }
   };
 
-  const handleCopyHTML = async () => {
-    try {
-      if (!selected?.full) return;
-
-      const html = selected.full;
-
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(html);
-      } else {
-        const ta = document.createElement('textarea');
-        ta.value = html;
-        ta.setAttribute('readonly', '');
-        ta.style.position = 'fixed';
-        ta.style.top = '-9999px';
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-      }
-
-      setNotice(true);
-      setFadeOut(false);
-      setTimeout(() => setFadeOut(true), 4500);
-      setTimeout(() => setNotice(false), 5000);
-    } catch (e) {
-      console.error(e);
-      alert('複製HTML失敗');
-    }
-  };
-
-
   const handleCopy = async () => {
     try {
       // 🔥 改這裡：直接複製 HTML 原始碼
@@ -105,7 +74,6 @@ export default function Toolbar({ onSearch, selected }) {
           }}
         />
 
-        <button onClick={handleCopyHTML}>複製HTML</button>
         <button onClick={handleCopy}>複製</button>
         <button onClick={handleGoCodePen}>CodePen</button>
       </div>

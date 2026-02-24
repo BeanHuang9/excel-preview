@@ -91,7 +91,7 @@ export default function App() {
       <h1>尺寸表資料庫</h1>
 
       {/* 🔹 Toolbar：只處理搜尋＋複製 */}
-      <Toolbar onSearch={handleSearch} selected={sizeSelected} />
+      <Toolbar onSearch={handleSearch} selected={selected} />
 
       {/* 🔹 尺寸表預覽 */}
       {sizeSelected?.isSize && sizeSelected.full && (
