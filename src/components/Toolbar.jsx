@@ -4,16 +4,22 @@ export default function Toolbar({ onSearch, selected }) {
   const [notice, setNotice] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
 
-  // ✅ 安全的複製函式：支援 https/localhost 的 Clipboard API，
-  //    其餘情況退回 textarea + execCommand('copy')
-  const copyText = async (text) => {
-    if (!text) return;
+  // ✅ 升級版複製：同時寫入 text/html + text/plain
+  const copyHTML = async (html) => {
+    if (!html) return;
+
     try {
       if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(text);
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            'text/html': new Blob([html], { type: 'text/html' }),
+            'text/plain': new Blob([html], { type: 'text/plain' }),
+          }),
+        ]);
       } else {
+        // fallback（舊瀏覽器）
         const ta = document.createElement('textarea');
-        ta.value = text;
+        ta.value = html;
         ta.setAttribute('readonly', '');
         ta.style.position = 'fixed';
         ta.style.top = '-9999px';
@@ -23,25 +29,25 @@ export default function Toolbar({ onSearch, selected }) {
         document.body.removeChild(ta);
       }
     } catch (err) {
-      // 仍失敗時丟出去給外層 catch
       throw err;
     }
   };
 
   const handleCopy = async () => {
     try {
-      await copyText(selected?.full || '');
+      // 🔥 改這裡：直接複製 HTML 原始碼
+      await copyHTML(selected?.full || '');
+
       setNotice(true);
       setFadeOut(false);
       setTimeout(() => setFadeOut(true), 4500);
       setTimeout(() => setNotice(false), 5000);
     } catch (e) {
       console.error(e);
-      alert('複製失敗：瀏覽器限制了剪貼簿權限（試試使用 localhost 或 HTTPS）。');
+      alert('複製失敗：請使用 HTTPS 或 localhost。');
     }
   };
 
-  // ➕ 新增：前往 CodePen
   const handleGoCodePen = () => {
     window.open('https://codepen.io/', '_blank', 'noopener,noreferrer');
   };
@@ -54,7 +60,7 @@ export default function Toolbar({ onSearch, selected }) {
           placeholder="搜尋商品名稱、條碼、家族碼或尺寸表內容…"
           onChange={(e) => onSearch(e.target.value)}
         />
-        {/* 顯示完整 HTML 原始碼 */}
+
         <textarea
           value={selected?.full || ''}
           readOnly
@@ -67,6 +73,7 @@ export default function Toolbar({ onSearch, selected }) {
             whiteSpace: 'pre-wrap',
           }}
         />
+
         <button onClick={handleCopy}>複製</button>
         <button onClick={handleGoCodePen}>CodePen</button>
       </div>

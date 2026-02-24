@@ -52,10 +52,10 @@ export default function DataTable({ headers, rows, selected, setSelected }) {
                       if (!isSizeCol(h)) return;
 
                       setSelected({
-                        full: fullValue,
+                        full: `<table>${fullValue}</table>`,
                         plain: plainValue,
                         isSize: true,
-                        familyCode: finalCode, // ✅ 一定有值（家族碼 or 條碼）
+                        familyCode: finalCode,
                       });
                     }}
                     className={isSelected ? 'selected-col' : ''}
