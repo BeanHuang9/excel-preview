@@ -16,7 +16,7 @@ export default function App() {
   const [page, setPage] = useState(1);
 
   // 🔹 Toolbar 用（只負責複製 HTML）
-  const [selected, setSelected] = useState(null);
+  // const [selected, setSelected] = useState(null);
 
   // 🔹 尺寸表專用（預覽 + 存 JPG）
   const [sizeSelected, setSizeSelected] = useState(null);
@@ -91,7 +91,7 @@ export default function App() {
       <h1>尺寸表資料庫</h1>
 
       {/* 🔹 Toolbar：只處理搜尋＋複製 */}
-      <Toolbar onSearch={handleSearch} selected={selected} />
+      <Toolbar onSearch={handleSearch} selected={sizeSelected} />
 
       {/* 🔹 尺寸表預覽 */}
       {sizeSelected?.isSize && sizeSelected.full && (
