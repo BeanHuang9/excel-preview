@@ -61,7 +61,7 @@ export default function Toolbar({ onSearch, selected }) {
           onChange={(e) => onSearch(e.target.value)}
         />
 
-        {/* <textarea
+        <textarea
           value={selected?.full || ''}
           readOnly
           style={{
@@ -72,7 +72,7 @@ export default function Toolbar({ onSearch, selected }) {
             fontSize: '13px',
             whiteSpace: 'pre-wrap',
           }}
-        /> */}
+        />
 
         <button onClick={handleCopy}>複製</button>
         <button onClick={handleGoCodePen}>CodePen</button>

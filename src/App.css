@@ -49,6 +49,7 @@ h1 {
 
 .toolbar textarea {
   height: 40px;
+  display: none;
 }
 
 .toolbar input[type='text']:focus {
