@@ -310,7 +310,7 @@ tbody tr:nth-child(odd) {
 }
 
 .preview-content {
-  width: 65%;
+  width: 50%;
 }
 
 /* 預覽內容內的表格樣式 */
