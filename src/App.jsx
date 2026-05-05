@@ -129,11 +129,14 @@ export default function App() {
                 const el = previewRef.current;
                 if (!el) return;
 
+                const rect = el.getBoundingClientRect();
+
                 const canvas = await html2canvas(el, {
+                  width: rect.width,
+                  height: rect.height,
+                  backgroundColor: '#ffffff',
                   scale: 2,
                   useCORS: true,
-                  width: el.scrollWidth,
-                  windowWidth: el.scrollWidth,
                 });
 
                 const link = document.createElement('a');
