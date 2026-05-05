@@ -8,7 +8,13 @@
 }
 
 body {
-  font-family: 'Noto Sans TC', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family:
+    'Noto Sans TC',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
   margin: var(--gap);
   background: #f8f8f8;
   color: #111827;
@@ -127,8 +133,12 @@ tbody tr:nth-child(odd) {
 
 /* 點擊閃黃 */
 @keyframes flash-yellow {
-  0% { background-color: #fff9c4; }
-  100% { background-color: transparent; }
+  0% {
+    background-color: #fff9c4;
+  }
+  100% {
+    background-color: transparent;
+  }
 }
 
 .flash-once {
@@ -137,8 +147,12 @@ tbody tr:nth-child(odd) {
 
 /* 複製成功閃綠 */
 @keyframes flash-green {
-  0% { background-color: #c8f7c5; }
-  100% { background-color: transparent; }
+  0% {
+    background-color: #c8f7c5;
+  }
+  100% {
+    background-color: transparent;
+  }
 }
 
 .flash-copied {
@@ -230,8 +244,12 @@ tbody tr:nth-child(odd) {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* 複製通知 */
@@ -271,7 +289,6 @@ tbody tr:nth-child(odd) {
   margin-bottom: 10px;
 }
 
-
 .preview-title {
   font-size: 14px;
   font-weight: 700;
@@ -290,6 +307,10 @@ tbody tr:nth-child(odd) {
 
 .preview-copy-btn:hover {
   background: #1f2937;
+}
+
+.preview-content {
+  width: 65%;
 }
 
 /* 預覽內容內的表格樣式 */
@@ -315,7 +336,6 @@ tbody tr:nth-child(odd) {
   background: #fafafa;
 }
 
-
 /* 回頂端按鈕 */
 .back-to-top {
   position: fixed;
@@ -329,8 +349,10 @@ tbody tr:nth-child(odd) {
   color: #fff;
   font-size: 18px;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  transition: opacity 0.25s, transform 0.25s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition:
+    opacity 0.25s,
+    transform 0.25s;
   z-index: 9999;
 }
 
@@ -344,4 +366,3 @@ tbody tr:nth-child(odd) {
   justify-content: flex-end;
   gap: 8px;
 }
-
