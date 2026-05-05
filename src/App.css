@@ -310,7 +310,7 @@ tbody tr:nth-child(odd) {
 }
 
 .preview-content {
-  width: 50%;
+  width: 70%;
 }
 
 /* 預覽內容內的表格樣式 */
@@ -328,6 +328,9 @@ tbody tr:nth-child(odd) {
   white-space: nowrap;
 }
 
+.preview-content td {
+  font-size: 15px;
+}
 .preview-content thead {
   background: #f3f4f6;
 }
