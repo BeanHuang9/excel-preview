@@ -129,18 +129,12 @@ export default function App() {
                 const el = previewRef.current;
                 if (!el) return;
 
-                const wrapper = document.createElement('div');
-                wrapper.style.padding = '10px';
-                wrapper.style.background = '#fff';
-                wrapper.style.display = 'inline-block';
-
-                wrapper.appendChild(el.cloneNode(true));
-                wrapper.style.position = 'fixed';
-                wrapper.style.top = '-9999px';
-                document.body.appendChild(wrapper);
-
-                const canvas = await html2canvas(wrapper, { scale: 2 });
-                document.body.removeChild(wrapper);
+                const canvas = await html2canvas(el, {
+                  scale: 2,
+                  useCORS: true,
+                  width: el.scrollWidth,
+                  windowWidth: el.scrollWidth,
+                });
 
                 const link = document.createElement('a');
                 link.download = `${code}.jpg`;
