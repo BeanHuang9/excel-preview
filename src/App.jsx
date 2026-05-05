@@ -129,10 +129,11 @@ export default function App() {
                 const el = previewRef.current;
                 if (!el) return;
 
-                const target = el.querySelector('table') || el;
-                const canvas = await html2canvas(target, {
+                const canvas = await html2canvas(el, {
                   scale: 2,
                   useCORS: true,
+                  width: el.scrollWidth,
+                  windowWidth: el.scrollWidth,
                 });
 
                 const link = document.createElement('a');
