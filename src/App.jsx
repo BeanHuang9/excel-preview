@@ -99,44 +99,22 @@ export default function App() {
           <div className="preview-header">
             <button
               className="preview-copy-btn"
-              onClick={async () => {
-                const code = sizeSelected.familyCode;
-                if (!code) {
-                  alert('此筆尺寸表沒有可用的家族碼或條碼');
-                  return;
-                }
-
+              onClick={() => {
                 const el = previewRef.current;
                 if (!el) return;
 
-                // 1) 先記住原本的樣式
-                const originalWidth = el.style.width;
-                const originalMaxWidth = el.style.maxWidth;
+                const range = document.createRange();
+                range.selectNodeContents(el);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
 
-                // 2) 暫時讓元素依內容自動撐開
-                el.style.width = 'fit-content';
-                el.style.maxWidth = 'none';
-
-                // 3) 等一個 frame,讓瀏覽器重新排版
-                await new Promise((r) => requestAnimationFrame(r));
-
-                const canvas = await html2canvas(el, {
-                  backgroundColor: '#ffffff',
-                  scale: 2,
-                  useCORS: true,
-                });
-
-                // 4) 還原樣式
-                el.style.width = originalWidth;
-                el.style.maxWidth = originalMaxWidth;
-
-                const link = document.createElement('a');
-                link.download = `${code}.jpg`;
-                link.href = canvas.toDataURL('image/jpeg', 0.95);
-                link.click();
+                document.execCommand('copy');
+                selection.removeAllRanges();
+                alert('已複製尺寸表，貼上後會是表格。');
               }}
             >
-              儲存成 JPG
+              複製表格
             </button>
 
             <button
