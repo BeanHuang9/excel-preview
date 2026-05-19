@@ -3,13 +3,20 @@ import React from 'react';
 // 工具：移除 HTML 標籤
 const stripHtml = (str) => String(str || '').replace(/<[^>]*>/g, '');
 
+// 尺寸表欄位
+const isSizeCol = (h) => h.includes('尺寸表');
+
+// 點擊可觸發家族反灰的欄位
+const isFamilyCol = (h) =>
+  h.includes('家族碼') || h.includes('集約條碼') || h.includes('條碼') || h.includes('商品頁名稱');
+
+// 非空非錯誤值
+const valid = (v) => v && v !== '#N/A';
+
 export default function DataTable({ headers, rows, selected, setSelected }) {
   if (!rows.length) {
     return <p>目前沒有資料。</p>;
   }
-
-  // 判斷是不是「尺寸表」欄位
-  const isSizeCol = (h) => h.includes('尺寸表');
 
   return (
     <table>
@@ -25,19 +32,29 @@ export default function DataTable({ headers, rows, selected, setSelected }) {
 
       <tbody>
         {rows.map((row, i) => {
-          // ✅ 找家族碼（防空白 / BOM）
+          // 取各家族識別欄位
           const familyKey = Object.keys(row).find((k) => k.includes('家族碼'));
+          const aggBarcodeKey = Object.keys(row).find((k) => k.includes('集約條碼'));
+          const barcodeKey = Object.keys(row).find(
+            (k) => k.includes('條碼') && !k.includes('集約')
+          );
+          const productNameKey = Object.keys(row).find((k) => k.includes('商品頁名稱'));
+
           const rawFamilyCode = familyKey ? String(row[familyKey]).trim() : '';
-
-          // ✅ 找條碼（當家族碼為空或 #N/A 時 fallback）
-          const barcodeKey = Object.keys(row).find((k) => k.includes('條碼'));
+          const aggBarcode = aggBarcodeKey ? String(row[aggBarcodeKey]).trim() : '';
           const barcode = barcodeKey ? String(row[barcodeKey]).trim() : '';
+          const productName = productNameKey ? String(row[productNameKey]).trim() : '';
 
-          // ✅ 最終用來當檔名的代碼
-          const finalCode = rawFamilyCode && rawFamilyCode !== '#N/A' ? rawFamilyCode : barcode;
+          // 最終用來當檔名的代碼（家族碼優先，fallback 條碼）
+          const finalCode = valid(rawFamilyCode) ? rawFamilyCode : barcode;
 
+          // 只要任一識別欄位相符即視為同家族
           const isSameFamily =
-            selected?.familyCode && finalCode && finalCode === selected.familyCode;
+            selected &&
+            ((valid(finalCode) && finalCode === selected.familyCode) ||
+              (valid(aggBarcode) && aggBarcode === selected.aggBarcode) ||
+              (valid(barcode) && barcode === selected.barcode) ||
+              (valid(productName) && productName === selected.productName));
 
           return (
             <tr key={i} className={isSameFamily ? 'same-family' : ''}>
@@ -45,23 +62,40 @@ export default function DataTable({ headers, rows, selected, setSelected }) {
                 const fullValue = row[h] || '';
                 const displayText = isSizeCol(h) ? fullValue : stripHtml(fullValue);
                 const plainValue = stripHtml(fullValue);
-                const isSelected = selected?.full === fullValue;
+                const isSelected = selected?.full === `<table>${fullValue}</table>`;
+                const clickable = isSizeCol(h) || isFamilyCol(h);
 
                 return (
                   <td
                     key={j}
                     onClick={() => {
-                      // ❗只在點「尺寸表欄位」時才更新 selected
-                      if (!isSizeCol(h)) return;
+                      if (!clickable) return;
 
-                      setSelected({
-                        full: `<table>${fullValue}</table>`,
-                        plain: plainValue,
-                        isSize: true,
-                        familyCode: finalCode,
-                      });
+                      if (isSizeCol(h)) {
+                        setSelected({
+                          full: `<table>${fullValue}</table>`,
+                          plain: plainValue,
+                          isSize: true,
+                          familyCode: finalCode,
+                          aggBarcode,
+                          barcode,
+                          productName,
+                        });
+                      } else {
+                        // 家族識別欄位：只更新家族資訊，不顯示預覽
+                        setSelected({
+                          full: null,
+                          plain: null,
+                          isSize: false,
+                          familyCode: finalCode,
+                          aggBarcode,
+                          barcode,
+                          productName,
+                        });
+                      }
                     }}
                     className={isSelected ? 'selected-col' : ''}
+                    style={clickable ? { cursor: 'pointer' } : undefined}
                     title={displayText}
                   >
                     {isSizeCol(h) ? <div className="clamp-2">{displayText}</div> : displayText}
