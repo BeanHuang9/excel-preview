@@ -289,8 +289,16 @@ tbody tr:nth-child(odd) {
 
 .preview-header {
   display: flex;
-  justify-content: flex-end; /* 強制靠右 */
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
+}
+
+.preview-family-code {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: 0.05em;
 }
 
 .preview-title {

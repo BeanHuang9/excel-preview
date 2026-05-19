@@ -97,6 +97,7 @@ export default function App() {
       {sizeSelected?.isSize && sizeSelected.full && (
         <div className="preview-card">
           <div className="preview-header">
+            <span className="preview-family-code">{sizeSelected.familyCode}</span>
             <button
               className="preview-copy-btn"
               onClick={() => {
