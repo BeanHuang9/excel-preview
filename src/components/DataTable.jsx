@@ -36,8 +36,11 @@ export default function DataTable({ headers, rows, selected, setSelected }) {
           // ✅ 最終用來當檔名的代碼
           const finalCode = rawFamilyCode && rawFamilyCode !== '#N/A' ? rawFamilyCode : barcode;
 
+          const isSameFamily =
+            selected?.familyCode && finalCode && finalCode === selected.familyCode;
+
           return (
-            <tr key={i}>
+            <tr key={i} className={isSameFamily ? 'same-family' : ''}>
               {headers.map((h, j) => {
                 const fullValue = row[h] || '';
                 const displayText = isSizeCol(h) ? fullValue : stripHtml(fullValue);
