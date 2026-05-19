@@ -84,11 +84,13 @@ export default function DataTable({ headers, rows, selected, setSelected }) {
                           productName,
                         });
                       } else {
-                        // 家族識別欄位：只更新家族資訊，不顯示預覽
+                        // 家族識別欄位：更新家族資訊，同時帶出同列的尺寸表預覽
+                        const sizeHeader = headers.find((hh) => isSizeCol(hh));
+                        const sizeValue = sizeHeader ? row[sizeHeader] || '' : '';
                         setSelected({
-                          full: null,
-                          plain: null,
-                          isSize: false,
+                          full: sizeValue ? `<table>${sizeValue}</table>` : null,
+                          plain: stripHtml(sizeValue),
+                          isSize: !!sizeValue,
                           familyCode: finalCode,
                           aggBarcode,
                           barcode,
