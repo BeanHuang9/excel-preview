@@ -6,10 +6,6 @@ const stripHtml = (str) => String(str || '').replace(/<[^>]*>/g, '');
 // 尺寸表欄位
 const isSizeCol = (h) => h.includes('尺寸表');
 
-// 點擊可觸發家族反灰的欄位
-const isFamilyCol = (h) =>
-  h.includes('家族碼') || h.includes('集約條碼') || h.includes('條碼') || h.includes('商品頁名稱');
-
 // 非空非錯誤值
 const valid = (v) => v && v !== '#N/A';
 
@@ -63,7 +59,13 @@ export default function DataTable({ headers, rows, selected, setSelected }) {
                 const displayText = isSizeCol(h) ? fullValue : stripHtml(fullValue);
                 const plainValue = stripHtml(fullValue);
                 const isSelected = selected?.full === `<table>${fullValue}</table>`;
-                const clickable = isSizeCol(h) || isFamilyCol(h);
+                // 直接比對已找到的 key，避免欄位名有不可見字元時 includes 靜默失效
+                const clickable =
+                  isSizeCol(h) ||
+                  h === familyKey ||
+                  h === aggBarcodeKey ||
+                  h === barcodeKey ||
+                  h === productNameKey;
 
                 return (
                   <td
