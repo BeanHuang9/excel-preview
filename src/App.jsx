@@ -132,11 +132,19 @@ export default function App() {
                 const rect = el.getBoundingClientRect();
                 const scale = 1000 / rect.width;
 
-                const canvas = await html2canvas(el, {
+                const raw = await html2canvas(el, {
                   backgroundColor: '#ffffff',
                   scale: scale,
                   useCORS: true,
                 });
+
+                // 強制輸出剛好 1000px 寬
+                const targetW = 1000;
+                const targetH = Math.round((raw.height * targetW) / raw.width);
+                const canvas = document.createElement('canvas');
+                canvas.width = targetW;
+                canvas.height = targetH;
+                canvas.getContext('2d').drawImage(raw, 0, 0, targetW, targetH);
 
                 const link = document.createElement('a');
                 link.download = `${code}.jpg`;
