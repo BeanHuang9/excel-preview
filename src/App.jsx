@@ -130,12 +130,11 @@ export default function App() {
                 if (!el) return;
 
                 const rect = el.getBoundingClientRect();
+                const scale = 1000 / rect.width;
 
                 const canvas = await html2canvas(el, {
-                  width: rect.width,
-                  height: rect.height,
                   backgroundColor: '#ffffff',
-                  scale: 2,
+                  scale: scale,
                   useCORS: true,
                 });
 
